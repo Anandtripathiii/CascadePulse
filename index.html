@@ -33,44 +33,44 @@
 <body class="bg-[#07090e] text-slate-100 flex flex-col h-screen select-none font-sans">
 
   <!-- Top Global Header with Cool Tech Gradient -->
-  <header class="h-16 header-gradient-border bg-[#0a0f1d]/95 backdrop-blur-2xl px-5 flex items-center justify-between z-30 shrink-0 shadow-2xl">
-    <div class="flex items-center gap-3.5">
-      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/40 ring-1 ring-white/30">
+  <header class="h-16 header-gradient-border bg-[#0a0f1d]/95 backdrop-blur-2xl px-5 flex items-center justify-between flex-nowrap gap-4 z-30 shrink-0 shadow-2xl overflow-x-auto overflow-y-hidden">
+    <div class="flex items-center gap-3 shrink-0">
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/40 ring-1 ring-white/30 shrink-0">
         <i data-lucide="network" class="w-5 h-5 text-white"></i>
       </div>
-      <div>
+      <div class="whitespace-nowrap">
         <div class="flex items-center gap-2">
-          <h1 class="font-black text-lg tracking-tight text-white flex items-center gap-2">
+          <h1 class="font-black text-lg tracking-tight text-white flex items-center gap-2 whitespace-nowrap">
             <span class="text-gradient-primary font-black">CascadePulse</span>
-            <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-indigo-500/30 to-purple-500/30 text-indigo-200 font-extrabold border border-indigo-500/40">v2.5 Pro</span>
+            <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-indigo-500/30 to-purple-500/30 text-indigo-200 font-extrabold border border-indigo-500/40 whitespace-nowrap">v2.5 Pro</span>
           </h1>
-          <span class="text-xs text-gradient-cyan font-bold hidden md:inline">| P05 Critical Infrastructure</span>
+          <span class="text-xs text-gradient-cyan font-bold hidden md:inline whitespace-nowrap">| P05 Critical Infrastructure</span>
         </div>
-        <p class="text-xs text-slate-400 font-medium">Urban Interdependency Graph & Domino Failure Simulator</p>
+        <p class="text-xs text-slate-400 font-medium whitespace-nowrap">Urban Interdependency Graph & Domino Failure Simulator</p>
       </div>
     </div>
 
     <!-- Threat Status & Action Bar -->
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-3 shrink-0">
       
       <!-- 1-Click Guided Demo Button (Cool Vibes) -->
-      <button id="guided-demo-btn" class="btn-rainbow text-white text-xs font-bold px-3.5 py-1.5 rounded-xl flex items-center gap-2 shadow-lg hover:scale-105 transition-all">
-        <i data-lucide="sparkles" class="w-4 h-4 text-yellow-300 animate-spin" style="animation-duration: 4s;"></i>
-        <span>✨ 1-Click Guided Demo</span>
+      <button id="guided-demo-btn" class="btn-rainbow text-white text-xs font-bold px-3.5 py-1.5 rounded-xl flex items-center gap-2 shadow-lg hover:scale-105 transition-all shrink-0 whitespace-nowrap">
+        <i data-lucide="sparkles" class="w-4 h-4 text-yellow-300 animate-spin shrink-0" style="animation-duration: 4s;"></i>
+        <span class="whitespace-nowrap">✨ 1-Click Guided Demo</span>
       </button>
 
       <!-- Live Threat Status Indicator -->
-      <div id="threat-pill" class="hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-bold shadow-md shadow-emerald-500/10">
-        <span id="threat-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-indicator pulse-green"></span>
-        <span id="threat-text" class="tracking-wide uppercase">Grid 100% Operational</span>
+      <div id="threat-pill" class="hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-bold shadow-md shadow-emerald-500/10 shrink-0 whitespace-nowrap">
+        <span id="threat-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-indicator pulse-green shrink-0"></span>
+        <span id="threat-text" class="tracking-wide uppercase whitespace-nowrap">Grid 100% Operational</span>
       </div>
 
       <!-- Quick Disaster Presets -->
-      <div class="flex items-center gap-2 bg-slate-900/80 border border-white/10 rounded-xl p-1">
-        <label for="disaster-select" class="text-xs text-amber-300 font-medium hidden lg:inline flex items-center gap-1 pl-2">
-          <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i> Disasters:
+      <div class="flex items-center gap-2 bg-slate-900/80 border border-white/10 rounded-xl p-1 shrink-0">
+        <label for="disaster-select" class="text-xs text-amber-300 font-medium hidden lg:inline-flex items-center gap-1 pl-2 whitespace-nowrap">
+          <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i> Disasters:
         </label>
-        <select id="disaster-select" class="text-xs bg-slate-800 text-slate-100 border-0 rounded-lg px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-400 cursor-pointer font-medium">
+        <select id="disaster-select" class="text-xs bg-slate-800 text-slate-100 border-0 rounded-lg px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-400 cursor-pointer font-medium max-w-[10rem] lg:max-w-none">
           <option value="none">-- Pick a Delhi Disaster Scenario --</option>
           <option value="preset-substation">⚡ Bawana 400kV Substation Grid Trip (DTL Power)</option>
           <option value="preset-bridge">🌉 Signature Bridge Trans-Yamuna Closure (Transit)</option>
@@ -81,18 +81,18 @@
       </div>
 
       <!-- Controls (Sound, Reset, Report) -->
-      <div class="flex items-center gap-2 border-l border-white/10 pl-3">
-        <button id="audio-toggle-btn" title="Toggle Sound FX" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-white/10 text-cyan-300 hover:text-cyan-200 transition-all btn-action">
+      <div class="flex items-center gap-2 border-l border-white/10 pl-3 shrink-0">
+        <button id="audio-toggle-btn" title="Toggle Sound FX" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-white/10 text-cyan-300 hover:text-cyan-200 transition-all btn-action shrink-0">
           <i data-lucide="volume-2" id="audio-icon" class="w-4 h-4"></i>
         </button>
 
-        <button id="reset-all-btn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-white/15 text-slate-200 text-xs font-semibold transition-all btn-action">
-          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-slate-400"></i>
+        <button id="reset-all-btn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-white/15 text-slate-200 text-xs font-semibold transition-all btn-action shrink-0 whitespace-nowrap">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
           <span>Reset</span>
         </button>
 
-        <button id="export-report-btn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition-all btn-action">
-          <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+        <button id="export-report-btn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition-all btn-action shrink-0 whitespace-nowrap">
+          <i data-lucide="file-text" class="w-3.5 h-3.5 shrink-0"></i>
           <span>Report</span>
         </button>
       </div>

@@ -61,6 +61,16 @@ body {
   background: linear-gradient(180deg, #8b5cf6, #ec4899);
 }
 
+/* Header never wraps; on very narrow viewports it scrolls horizontally
+   instead of breaking the fixed h-16 height. Scrollbar hidden for a clean look. */
+header.header-gradient-border {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+header.header-gradient-border::-webkit-scrollbar {
+  display: none;
+}
+
 /* Header Gradient Underline */
 .header-gradient-border {
   position: relative;
