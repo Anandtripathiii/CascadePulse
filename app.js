@@ -1251,16 +1251,16 @@ function updateUI() {
   const threatText = document.getElementById("threat-text");
 
   if (metrics.compromisedCount === 0) {
-    threatPill.className = "hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-bold shadow-md shadow-emerald-500/10";
-    threatDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-indicator pulse-green";
+    threatPill.className = "hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-bold shadow-md shadow-emerald-500/10 shrink-0 whitespace-nowrap";
+    threatDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-indicator pulse-green shrink-0";
     threatText.textContent = "Delhi Grid 100% Operational";
   } else if (metrics.compromisedPct < 35) {
-    threatPill.className = "hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-bold shadow-md shadow-amber-500/10";
-    threatDot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 pulse-indicator pulse-amber";
+    threatPill.className = "hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-bold shadow-md shadow-amber-500/10 shrink-0 whitespace-nowrap";
+    threatDot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 pulse-indicator pulse-amber shrink-0";
     threatText.textContent = `DDMA Advisory (${metrics.compromisedCount} Assets Affected)`;
   } else {
-    threatPill.className = "hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-red-500/20 border border-red-500/50 text-red-300 text-xs font-bold shadow-lg shadow-red-500/20";
-    threatDot.className = "w-2.5 h-2.5 rounded-full bg-red-400 pulse-indicator pulse-red";
+    threatPill.className = "hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-red-500/20 border border-red-500/50 text-red-300 text-xs font-bold shadow-lg shadow-red-500/20 shrink-0 whitespace-nowrap";
+    threatDot.className = "w-2.5 h-2.5 rounded-full bg-red-400 pulse-indicator pulse-red shrink-0";
     threatText.textContent = `Delhi Emergency Alert (${metrics.compromisedPct}% Compromised)`;
   }
 
