@@ -11,7 +11,7 @@
 
 In the National Capital Territory of Delhi, critical systems are tightly coupled. A grid trip at the **Bawana 400kV Substation** or severe monsoon inundation of the **Wazirabad Water Treatment Plant** immediately compromises drinking water for Central/North Delhi, cuts power to the **Delhi Traffic Police Central Control Room**, gridlocks the **Signature Bridge**, and threatens emergency trauma access to **AIIMS New Delhi**.
 
-**CascadePulse Delhi NCR** models these vital interdependencies as an interactive directed graph to empower DDMA urban planners, emergency services, and infrastructure engineers to simulate cascading multi-hop outages, identify single points of failure, and evaluate targeted engineering interventions.
+**CascadePulse Delhi NCR** models these vital interdependencies as an interactive directed graph to empower DDMA urban planners, emergency services, & infrastructure engineers to simulate cascading multi-hop outages, identify single points of failure, and evaluate targeted engineering interventions.
 
 ---
 
