@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CascadePulse // Disaster Resilience & Critical Infrastructure Simulator</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <link rel="stylesheet" href="styles.css">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              900: '#1e1b4b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#07090e] text-slate-100 flex flex-col h-screen select-none font-sans">
+
+  <!-- Top Global Header with Cool Tech Gradient -->
+  <header class="h-16 header-gradient-border bg-[#0a0f1d]/95 backdrop-blur-2xl px-5 flex items-center justify-between z-30 shrink-0 shadow-2xl">
+    <div class="flex items-center gap-3.5">
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/40 ring-1 ring-white/30">
+        <i data-lucide="network" class="w-5 h-5 text-white"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-black text-lg tracking-tight text-white flex items-center gap-2">
+            <span class="text-gradient-primary font-black">CascadePulse</span>
+            <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-indigo-500/30 to-purple-500/30 text-indigo-200 font-extrabold border border-indigo-500/40">v2.5 Pro</span>
+          </h1>
+          <span class="text-xs text-gradient-cyan font-bold hidden md:inline">| P05 Critical Infrastructure</span>
+        </div>
+        <p class="text-xs text-slate-400 font-medium">Urban Interdependency Graph & Domino Failure Simulator</p>
+      </div>
+    </div>
+
+    <!-- Threat Status & Action Bar -->
+    <div class="flex items-center gap-3">
+      
+      <!-- 1-Click Guided Demo Button (Cool Vibes) -->
+      <button id="guided-demo-btn" class="btn-rainbow text-white text-xs font-bold px-3.5 py-1.5 rounded-xl flex items-center gap-2 shadow-lg hover:scale-105 transition-all">
+        <i data-lucide="sparkles" class="w-4 h-4 text-yellow-300 animate-spin" style="animation-duration: 4s;"></i>
+        <span>✨ 1-Click Guided Demo</span>
+      </button>
+
+      <!-- Live Threat Status Indicator -->
+      <div id="threat-pill" class="hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-bold shadow-md shadow-emerald-500/10">
+        <span id="threat-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-indicator pulse-green"></span>
+        <span id="threat-text" class="tracking-wide uppercase">Grid 100% Operational</span>
+      </div>
+
+      <!-- Quick Disaster Presets -->
+      <div class="flex items-center gap-2 bg-slate-900/80 border border-white/10 rounded-xl p-1">
+        <label for="disaster-select" class="text-xs text-amber-300 font-medium hidden lg:inline flex items-center gap-1 pl-2">
+          <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i> Disasters:
+        </label>
+        <select id="disaster-select" class="text-xs bg-slate-800 text-slate-100 border-0 rounded-lg px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-400 cursor-pointer font-medium">
+          <option value="none">-- Pick a Delhi Disaster Scenario --</option>
+          <option value="preset-substation">⚡ Bawana 400kV Substation Grid Trip (DTL Power)</option>
+          <option value="preset-bridge">🌉 Signature Bridge Trans-Yamuna Closure (Transit)</option>
+          <option value="preset-cyber">💻 Delhi Traffic Police Cyber Breach (Ring Road Jam)</option>
+          <option value="preset-water">🌊 Yamuna Flood & Wazirabad WTP Inundation (DJB)</option>
+          <option value="preset-compound">🌪️ Compound Monsoon Storm (Bawana + Signature Bridge)</option>
+        </select>
+      </div>
+
+      <!-- Controls (Sound, Reset, Report) -->
+      <div class="flex items-center gap-2 border-l border-white/10 pl-3">
+        <button id="audio-toggle-btn" title="Toggle Sound FX" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-white/10 text-cyan-300 hover:text-cyan-200 transition-all btn-action">
+          <i data-lucide="volume-2" id="audio-icon" class="w-4 h-4"></i>
+        </button>
+
+        <button id="reset-all-btn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-white/15 text-slate-200 text-xs font-semibold transition-all btn-action">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-slate-400"></i>
+          <span>Reset</span>
+        </button>
+
+        <button id="export-report-btn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition-all btn-action">
+          <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+          <span>Report</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Layout (Split View) -->
+  <div class="flex-1 flex overflow-hidden relative">
+
+    <!-- Sector Filter Chips (Floating Top Left) -->
+    <div class="absolute top-4 left-4 z-20 flex flex-wrap gap-1.5 bg-[#0f1629]/90 backdrop-blur-md p-2 rounded-2xl border border-white/15 shadow-2xl">
+      <span class="text-[11px] font-bold text-slate-400 self-center px-2">Sectors:</span>
+      <button data-sector="all" class="sector-filter-btn active px-3 py-1 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-md shadow-indigo-600/30 transition-all">All (16)</button>
+      <button data-sector="power" class="sector-filter-btn px-2.5 py-1 rounded-xl text-xs font-semibold text-amber-300 hover:bg-amber-500/20 transition-all border border-amber-500/20">⚡ Energy</button>
+      <button data-sector="water" class="sector-filter-btn px-2.5 py-1 rounded-xl text-xs font-semibold text-cyan-300 hover:bg-cyan-500/20 transition-all border border-cyan-500/20">💧 Water</button>
+      <button data-sector="transit" class="sector-filter-btn px-2.5 py-1 rounded-xl text-xs font-semibold text-blue-300 hover:bg-blue-500/20 transition-all border border-blue-500/20">🚗 Transit</button>
+      <button data-sector="health" class="sector-filter-btn px-2.5 py-1 rounded-xl text-xs font-semibold text-pink-300 hover:bg-pink-500/20 transition-all border border-pink-500/20">🏥 Health</button>
+      <button data-sector="comms" class="sector-filter-btn px-2.5 py-1 rounded-xl text-xs font-semibold text-purple-300 hover:bg-purple-500/20 transition-all border border-purple-500/20">📡 Comms</button>
+    </div>
+
+    <!-- Onboarding Guide Card (Friendly Helper, Dismissable) -->
+    <div id="onboarding-guide" class="absolute top-16 left-4 z-20 w-80 glass-panel p-3.5 border-indigo-500/30 glow-card-indigo text-xs">
+      <div class="flex items-center justify-between mb-2">
+        <span class="font-bold text-white flex items-center gap-1.5 text-xs text-indigo-300">
+          <i data-lucide="help-circle" class="w-4 h-4 text-indigo-400"></i> How to Use Simulator
+        </span>
+        <button id="dismiss-guide-btn" class="text-slate-400 hover:text-white p-1 rounded transition-all">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+      <ol class="space-y-1.5 text-slate-300 text-[11px] leading-snug">
+        <li class="flex items-start gap-2">
+          <span class="w-4 h-4 rounded-full bg-indigo-500/30 text-indigo-300 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">1</span>
+          <span><strong>Click any Delhi asset</strong>: e.g. Bawana Substation or Wazirabad WTP to trigger an outage.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="w-4 h-4 rounded-full bg-cyan-500/30 text-cyan-300 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">2</span>
+          <span>Click <strong>Auto-Propagate</strong> to watch power loss ripple into water pumps and gridlock Signature Bridge!</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="w-4 h-4 rounded-full bg-emerald-500/30 text-emerald-300 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">3</span>
+          <span>Check the <strong>Planner Tab</strong> to engage the AIIMS Solar Microgrid and contain the disaster!</span>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Canvas Container (Interactive Simulation Stage) -->
+    <div id="canvas-container" class="flex-1 relative overflow-hidden flex flex-col cursor-grab active:cursor-grabbing">
+      <canvas id="graph-canvas" class="w-full h-full block"></canvas>
+
+      <!-- Floating Graph Viewport HUD (Bottom Left) -->
+      <div class="absolute bottom-5 left-5 z-20 flex items-center gap-2 bg-[#0f1629]/90 backdrop-blur-md p-1.5 rounded-2xl border border-white/15 shadow-xl text-slate-300">
+        <button id="btn-zoom-in" title="Zoom In" class="p-2 hover:bg-white/10 rounded-xl transition-all"><i data-lucide="zoom-in" class="w-4 h-4 text-cyan-400"></i></button>
+        <button id="btn-zoom-out" title="Zoom Out" class="p-2 hover:bg-white/10 rounded-xl transition-all"><i data-lucide="zoom-out" class="w-4 h-4 text-cyan-400"></i></button>
+        <button id="btn-fit-view" title="Reset View" class="p-2 hover:bg-white/10 rounded-xl transition-all"><i data-lucide="maximize" class="w-4 h-4 text-indigo-400"></i></button>
+        <div class="w-px h-4 bg-white/15 mx-1"></div>
+        <button id="btn-pause-physics" title="Toggle Physics Layout" class="px-2.5 py-1 text-xs hover:bg-white/10 rounded-xl transition-all flex items-center gap-1.5 font-semibold text-slate-200">
+          <i data-lucide="pause" id="physics-icon" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span id="physics-label">Freeze</span>
+        </button>
+      </div>
+
+      <!-- Floating Interactive Step / Timeline Player (Bottom Center) -->
+      <div class="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 bg-[#0f1629]/95 backdrop-blur-xl px-5 py-3 rounded-2xl border border-white/20 shadow-2xl">
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-200 pr-3 border-r border-white/15">
+          <i data-lucide="git-commit" class="w-4 h-4 text-indigo-400"></i>
+          <span>Step:</span>
+          <span id="timeline-step-badge" class="px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 font-mono-num font-bold text-xs">0 / 4</span>
+        </div>
+
+        <button id="step-prev-btn" title="Previous Cascade Step" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+          <i data-lucide="skip-back" class="w-4 h-4"></i>
+        </button>
+
+        <button id="play-pause-btn" class="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-bold text-xs shadow-lg shadow-indigo-600/40 transition-all btn-action">
+          <i data-lucide="play" id="play-icon" class="w-4 h-4"></i>
+          <span id="play-text">Auto-Propagate</span>
+        </button>
+
+        <button id="step-next-btn" title="Propagate Next Step" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+          <i data-lucide="skip-forward" class="w-4 h-4"></i>
+        </button>
+
+        <div class="hidden sm:flex items-center gap-2 pl-3 border-l border-white/15">
+          <span class="text-[11px] text-slate-300 font-semibold">Speed:</span>
+          <input id="sim-speed-slider" type="range" min="500" max="2500" step="250" value="1200" class="w-20 accent-indigo-500 cursor-pointer">
+        </div>
+      </div>
+
+      <!-- Quick Hint Overlay (Top Right of Canvas) -->
+      <div class="absolute top-4 right-4 z-10 flex flex-col items-end gap-1.5 pointer-events-none">
+        <div class="bg-black/60 backdrop-blur-md border border-white/15 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-200 flex items-center gap-2 shadow-lg">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+          <span>Click any node to trigger / heal</span>
+        </div>
+        <div class="bg-black/50 backdrop-blur-md border border-white/10 px-3 py-1 rounded-lg text-[11px] text-slate-300 flex items-center gap-1.5">
+          <i data-lucide="move" class="w-3.5 h-3.5 text-indigo-400"></i>
+          <span>Drag nodes to rearrange | Scroll to zoom</span>
+        </div>
+      </div>
+
+      <!-- Node Details Hover Tooltip -->
+      <div id="graph-tooltip" class="opacity-0 glass-panel p-4 text-xs w-72 pointer-events-none shadow-2xl border-indigo-500/40 glow-card-indigo">
+        <div class="flex items-center justify-between mb-2">
+          <span id="tooltip-sector" class="sector-badge sector-power">Power Grid</span>
+          <span id="tooltip-status" class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-500/25 text-emerald-300 border border-emerald-500/40">Normal</span>
+        </div>
+        <h4 id="tooltip-name" class="font-extrabold text-sm text-white mb-1">North Substation Alpha</h4>
+        <p id="tooltip-desc" class="text-slate-300 text-xs leading-relaxed mb-3">Primary high-voltage transformer stepping down 500kV.</p>
+        <div class="grid grid-cols-2 gap-2 pt-2.5 border-t border-white/15 text-[11px]">
+          <div class="bg-slate-900/60 p-1.5 rounded-lg border border-white/5">
+            <span class="text-slate-400 block text-[10px]">Criticality Risk:</span>
+            <span id="tooltip-criticality" class="font-mono-num font-black text-indigo-300 text-sm">92 / 100</span>
+          </div>
+          <div class="bg-slate-900/60 p-1.5 rounded-lg border border-white/5">
+            <span class="text-slate-400 block text-[10px]">Dependents:</span>
+            <span id="tooltip-dependents" class="font-mono-num font-black text-amber-300 text-sm">5 downstream</span>
+          </div>
+          <div class="col-span-2 bg-slate-900/60 p-1.5 rounded-lg border border-white/5">
+            <span class="text-slate-400 block text-[10px]">Backup Resilience:</span>
+            <span id="tooltip-backup" class="text-slate-200 font-medium">Dual Grid Reroute (15 min)</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Sidebar Panel (Tabbed Analytics & Control) -->
+    <aside class="w-96 md:w-[430px] bg-[#0c1120]/95 border-l border-white/10 flex flex-col z-20 shrink-0 shadow-2xl">
+      
+      <!-- Tabs Bar -->
+      <div class="flex border-b border-white/15 bg-slate-900/80 shrink-0">
+        <button data-tab="tab-live" class="tab-btn active flex-1 py-3.5 px-2 text-xs font-bold flex items-center justify-center gap-1.5">
+          <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i>
+          <span>Live Cascade</span>
+        </button>
+        <button data-tab="tab-spof" class="tab-btn flex-1 py-3.5 px-2 text-xs font-bold text-slate-400 flex items-center justify-center gap-1.5">
+          <i data-lucide="flame" class="w-4 h-4 text-amber-400"></i>
+          <span>Critical SPOFs</span>
+        </button>
+        <button data-tab="tab-compare" class="tab-btn flex-1 py-3.5 px-2 text-xs font-bold text-slate-400 flex items-center justify-center gap-1.5">
+          <i data-lucide="git-compare" class="w-4 h-4 text-pink-400"></i>
+          <span>What-If</span>
+        </button>
+        <button data-tab="tab-interventions" class="tab-btn flex-1 py-3.5 px-2 text-xs font-bold text-slate-400 flex items-center justify-center gap-1.5">
+          <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+          <span>Planner</span>
+        </button>
+      </div>
+
+      <!-- Tab 1: Live Incident Dashboard -->
+      <div id="tab-live" class="tab-content flex-1 overflow-y-auto p-4 space-y-4">
+        
+        <!-- Executive KPI Metrics Grid (Super Vibrant & High-Contrast) -->
+        <div class="grid grid-cols-2 gap-3">
+          
+          <!-- Metric 1: Compromised -->
+          <div class="glass-panel p-3.5 border-red-500/30 glow-card-pink bg-gradient-to-br from-red-950/20 to-slate-900/70">
+            <span class="text-xs font-bold text-red-300 flex items-center justify-between">
+              Grid Compromised
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-red-400"></i>
+            </span>
+            <div class="flex items-baseline gap-1.5 mt-1.5">
+              <span id="metric-compromised-pct" class="font-mono-num text-3xl font-black text-emerald-400">0%</span>
+              <span id="metric-compromised-count" class="text-xs text-slate-400 font-semibold">(0/16 assets)</span>
+            </div>
+            <div class="w-full bg-slate-800/80 h-2 rounded-full mt-2.5 overflow-hidden border border-white/5">
+              <div id="metric-compromised-bar" class="h-full bg-emerald-500 transition-all duration-500" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Metric 2: Population -->
+          <div class="glass-panel p-3.5 border-cyan-500/30 glow-card-cyan bg-gradient-to-br from-cyan-950/20 to-slate-900/70">
+            <span class="text-xs font-bold text-cyan-300 flex items-center justify-between">
+              Population Cut Off
+              <i data-lucide="users" class="w-4 h-4 text-cyan-400"></i>
+            </span>
+            <div class="flex items-baseline gap-1.5 mt-1.5">
+              <span id="metric-population" class="font-mono-num text-3xl font-black text-white">0</span>
+              <span class="text-xs text-cyan-300/80 font-medium">citizens</span>
+            </div>
+            <p id="metric-population-sub" class="text-[11px] text-cyan-200/70 mt-2 truncate font-medium">All districts fully energized</p>
+          </div>
+
+          <!-- Metric 3: Lifelines -->
+          <div class="glass-panel p-3.5 border-pink-500/30 glow-card-pink bg-gradient-to-br from-pink-950/20 to-slate-900/70">
+            <span class="text-xs font-bold text-pink-300 flex items-center justify-between">
+              Lifelines At Risk
+              <i data-lucide="heart-pulse" class="w-4 h-4 text-pink-400"></i>
+            </span>
+            <div class="flex items-baseline gap-1.5 mt-1.5">
+              <span id="metric-lifelines" class="font-mono-num text-3xl font-black text-emerald-400">0 / 3</span>
+            </div>
+            <p id="metric-lifelines-sub" class="text-[11px] text-pink-200/70 mt-2 font-medium">Trauma hospital & 911 secure</p>
+          </div>
+
+          <!-- Metric 4: Propagation Depth -->
+          <div class="glass-panel p-3.5 border-indigo-500/30 glow-card-indigo bg-gradient-to-br from-indigo-950/20 to-slate-900/70">
+            <span class="text-xs font-bold text-indigo-300 flex items-center justify-between">
+              Cascade Depth
+              <i data-lucide="git-branch" class="w-4 h-4 text-indigo-400"></i>
+            </span>
+            <div class="flex items-baseline gap-1.5 mt-1.5">
+              <span id="metric-hops" class="font-mono-num text-3xl font-black text-slate-100">0</span>
+              <span class="text-xs text-indigo-300/80 font-medium">max hops</span>
+            </div>
+            <p id="metric-blast-radius" class="text-[11px] text-indigo-200/70 mt-2 font-medium">Radius: 0 km footprint</p>
+          </div>
+        </div>
+
+        <!-- Failure Propagation Chain / Event Log -->
+        <div class="glass-panel p-4">
+          <div class="flex items-center justify-between mb-2.5">
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-white flex items-center gap-2">
+              <i data-lucide="git-pull-request" class="w-4 h-4 text-indigo-400"></i>
+              Cascade Domino Chain
+            </h3>
+            <span id="log-count-badge" class="text-[11px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2.5 py-0.5 rounded-full font-mono font-bold">0 events</span>
+          </div>
+          <div id="cascade-event-log" class="space-y-2 max-h-48 overflow-y-auto pr-1 text-xs">
+            <div class="text-slate-400 text-xs italic py-4 text-center bg-slate-900/40 rounded-xl border border-dashed border-white/10">
+              💡 No active failures. Click any node in the graph or select a disaster scenario above to simulate cascading disruption.
+            </div>
+          </div>
+        </div>
+
+        <!-- Asset Disruption Breakdown by Sector -->
+        <div class="glass-panel p-4">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-white mb-3 flex items-center justify-between">
+            <span>Asset Status Telemetry</span>
+            <span class="text-[11px] text-cyan-400 font-bold">16 Monitored Assets</span>
+          </h3>
+          <div id="asset-status-list" class="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+            <!-- Dynamic node cards populated by JS -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tab 2: Critical Node Leaderboard (Single Points of Failure) -->
+      <div id="tab-spof" class="tab-content hidden flex-1 overflow-y-auto p-4 space-y-3.5">
+        <div class="bg-gradient-to-r from-amber-950/40 to-slate-900/60 border border-amber-500/30 rounded-2xl p-3.5 text-xs text-amber-200 leading-relaxed shadow-lg">
+          <p class="font-bold text-amber-300 flex items-center gap-2 mb-1 text-xs">
+            <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400"></i>
+            Single Points of Failure (SPOF) Ranking
+          </p>
+          Every asset is brute-force simulated as a hypothetical failure origin. Assets with the highest cascading blast radius and critical lifeline cutoffs rank at the top.
+        </div>
+
+        <!-- Leaderboard Table -->
+        <div class="glass-panel p-2.5">
+          <div class="grid grid-cols-12 text-[10px] font-bold text-slate-400 px-2.5 py-2 border-b border-white/10 uppercase">
+            <span class="col-span-1">Rank</span>
+            <span class="col-span-5">Infrastructure Asset</span>
+            <span class="col-span-3 text-center">Blast Score</span>
+            <span class="col-span-3 text-right">Action</span>
+          </div>
+          <div id="leaderboard-container" class="space-y-1.5 mt-2 max-h-[500px] overflow-y-auto">
+            <!-- Populated dynamically by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Scenario Comparison (What-If) -->
+      <div id="tab-compare" class="tab-content hidden flex-1 overflow-y-auto p-4 space-y-4">
+        <div class="bg-gradient-to-r from-indigo-950/40 to-pink-950/40 border border-indigo-500/30 rounded-2xl p-3.5 text-xs text-slate-200 shadow-lg">
+          <h3 class="font-extrabold text-white flex items-center gap-2 mb-1 text-xs">
+            <i data-lucide="git-compare" class="w-4 h-4 text-cyan-400"></i>
+            Side-by-Side "What-If" Analysis
+          </h3>
+          Select two critical assets to compare their failure blast radius and determine which failure creates the more severe bottleneck.
+        </div>
+
+        <!-- Scenario Pickers -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-indigo-300 mb-1.5">Scenario A (Primary):</label>
+            <select id="compare-select-a" class="w-full text-xs bg-slate-900 text-slate-100 border border-indigo-500/40 rounded-xl p-2.5 focus:outline-none focus:ring-1 focus:ring-indigo-400 font-semibold cursor-pointer">
+              <!-- Populated by JS -->
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-pink-300 mb-1.5">Scenario B (Alternate):</label>
+            <select id="compare-select-b" class="w-full text-xs bg-slate-900 text-slate-100 border border-pink-500/40 rounded-xl p-2.5 focus:outline-none focus:ring-1 focus:ring-pink-400 font-semibold cursor-pointer">
+              <!-- Populated by JS -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Side by Side Comparative Cards -->
+        <div id="comparison-results" class="space-y-3">
+          <!-- Dynamic comparison cards inserted by JS -->
+        </div>
+
+        <!-- Automated Verdict Card -->
+        <div id="comparison-verdict" class="glass-panel p-4 border-indigo-500/40 bg-gradient-to-br from-indigo-950/30 to-slate-900/80">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Tab 4: Urban Resilience Intervention Planner -->
+      <div id="tab-interventions" class="tab-content hidden flex-1 overflow-y-auto p-4 space-y-4">
+        <div class="bg-gradient-to-r from-emerald-950/40 to-slate-900/60 border border-emerald-500/30 rounded-2xl p-3.5 text-xs text-emerald-200 leading-relaxed shadow-lg">
+          <h3 class="font-extrabold text-emerald-300 flex items-center gap-2 mb-1 text-xs">
+            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+            Resilience Engineering & Containment
+          </h3>
+          Problem Statement P05 specifies helping planners understand where intervention has the greatest effect. Toggle interventions below to test grid defenses!
+        </div>
+
+        <div class="space-y-3">
+          <!-- Intervention 1 -->
+          <div class="glass-panel p-3.5 border-emerald-500/30 hover:border-emerald-500/60 transition-all glow-card-cyan">
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" id="intervention-microgrid" class="mt-1 w-4 h-4 accent-emerald-500 rounded cursor-pointer">
+              <div>
+                <span class="font-bold text-xs text-white block">AIIMS Dedicated Solar-BESS Microgrid Intertie</span>
+                <p class="text-[11px] text-slate-300 mt-1 leading-relaxed">
+                  Interlinks IGI Clean Solar Reserve directly to AIIMS Apex Trauma Center as an automated microgrid. Guarantees zero ICU blackout even if Bawana 400kV trips.
+                </p>
+                <span class="inline-block mt-2 text-[10px] text-emerald-300 font-bold bg-emerald-500/20 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                  🛡️ Shields AIIMS Trauma Care from Grid Collapse
+                </span>
+              </div>
+            </label>
+          </div>
+
+          <!-- Intervention 2 -->
+          <div class="glass-panel p-3.5 border-emerald-500/30 hover:border-emerald-500/60 transition-all glow-card-indigo">
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" id="intervention-ups" class="mt-1 w-4 h-4 accent-emerald-500 rounded cursor-pointer">
+              <div>
+                <span class="font-bold text-xs text-white block">Delhi Traffic Police 12h UPS & Ring Road Redundancy</span>
+                <p class="text-[11px] text-slate-300 mt-1 leading-relaxed">
+                  Deploys battery backup across Central Control Room and Ring Road arterial signal controllers to maintain ambulance green corridors.
+                </p>
+                <span class="inline-block mt-2 text-[10px] text-cyan-300 font-bold bg-cyan-500/20 px-2.5 py-0.5 rounded-full border border-cyan-500/30">
+                  🚗 Prevents Signature Bridge & Ring Road Gridlock
+                </span>
+              </div>
+            </label>
+          </div>
+
+          <!-- Intervention 3 -->
+          <div class="glass-panel p-3.5 border-emerald-500/30 hover:border-emerald-500/60 transition-all glow-card-amber">
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" id="intervention-diesel-pump" class="mt-1 w-4 h-4 accent-emerald-500 rounded cursor-pointer">
+              <div>
+                <span class="font-bold text-xs text-white block">DJB Wazirabad Auxiliary Diesel Turbine Bypass</span>
+                <p class="text-[11px] text-slate-300 mt-1 leading-relaxed">
+                  Equips Wazirabad Water Treatment Plant with high-output auxiliary diesel pumps to maintain municipal drinking water pressure during power outage.
+                </p>
+                <span class="inline-block mt-2 text-[10px] text-amber-300 font-bold bg-amber-500/20 px-2.5 py-0.5 rounded-full border border-amber-500/30">
+                  💧 Protects 450,000 Citizens from Water Outage
+                </span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="glass-panel p-3.5 bg-emerald-950/20 border-emerald-500/30 text-xs">
+          <span class="font-bold text-emerald-300 flex items-center gap-1.5 mb-1">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            Active Grid Defenses
+          </span>
+          <p id="interventions-active-summary" class="text-xs text-slate-300 font-medium">
+            0 / 3 active interventions. Enable one or more to see live cascade containment in the graph!
+          </p>
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- Incident Report Modal -->
+  <div id="report-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-panel bg-[#0e1424] border-white/20 w-full max-w-2xl max-h-[85vh] flex flex-col rounded-2xl shadow-2xl overflow-hidden animate-fade-in">
+      <div class="p-4 border-b border-white/10 flex items-center justify-between bg-slate-900/90">
+        <div class="flex items-center gap-2.5">
+          <i data-lucide="file-check-2" class="w-5 h-5 text-indigo-400"></i>
+          <h3 class="font-bold text-base text-white">Critical Infrastructure Cascading Incident Report</h3>
+        </div>
+        <button id="close-report-btn" class="p-1.5 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition-all">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div id="report-content" class="p-5 overflow-y-auto space-y-4 text-xs font-mono text-slate-200 leading-relaxed bg-slate-950/60">
+        <!-- Filled dynamically -->
+      </div>
+
+      <div class="p-3.5 border-t border-white/10 flex items-center justify-between bg-slate-900/80">
+        <span class="text-xs text-slate-400">Problem Statement P05 Deliverable</span>
+        <button id="download-report-btn" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/30">
+          <i data-lucide="download" class="w-4 h-4"></i>
+          <span>Download Markdown</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Simulator Engine Script -->
+  <script src="app.js"></script>
+</body>
+</html>
